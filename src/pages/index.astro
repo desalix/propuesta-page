@@ -1,17 +1,208 @@
 ---
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import PlanCard from '../components/PlanCard.astro';
+
+// Único dato que falta por rellenar: el nombre que se muestra arriba y en el pie.
+const AGENCIA = '[Tu web a medida.]';
+
+const paquetes = [
+	{
+		nombre: 'Básico',
+		precio: '549 €',
+		subtitulo: '',
+		caracteristicas: [
+			'Páginas: inicio, catálogo, ficha de vehículo y quiénes somos.',
+			'Diseño responsive con tus colores y tu logo.',
+			'Listado de catálogo con búsqueda y orden.',
+			'Panel de administrador.',
+			'Mapa y datos del concesionario.',
+			'Páginas legales: aviso legal, política de privacidad y política de cookies.',
+		],
+	},
+	{
+		nombre: 'Premium',
+		precio: '799 €',
+		subtitulo: '',
+		nota: 'Todo lo del paquete Básico, más:',
+		caracteristicas: [
+			'Funcionalidades especiales a medida: cuéntanos qué quieres y lo estudiamos.',
+			'Te añadimos todos los coches que tengas actualmente disponibles.',
+			'Google Review NFC incluido.',
+			'Servicio de email corporativo.',
+		],
+	},
+];
+
+const mensualidad = [
+	{
+		nombre: 'Mantenimiento',
+		precio: '49 €',
+		sufijo: '/ mes',
+		subtitulo: 'cuota mensual, opcional',
+		listaDoble: true,
+		caracteristicas: [
+			'Soporte a través de WhatsApp.',
+			'Mantenimiento de errores funcionales.',
+			'Actualizaciones de seguridad.',
+			'Revisión de textos legales y cookies.',
+			'Cambios en el diseño (4 horas).',
+			'Hosting de la página.',
+		],
+	},
+];
+
+const hosting = [
+	{
+		nombre: 'Hosting',
+		precio: 'Incluido',
+		subtitulo: 'dentro de la cuota de mantenimiento',
+		caracteristicas: [
+			'El hosting de la página va incluido en los 49 € al mes.',
+			'Sin coste aparte mientras el mantenimiento esté activo.',
+		],
+	},
+	{
+		nombre: 'Dominio',
+		precio: 'Aparte',
+		subtitulo: 'a cargo del cliente',
+		caracteristicas: [
+			'El gasto de titularidad del dominio corre a cargo del cliente.',
+			'El dominio queda a nombre del concesionario.',
+		],
+	},
+];
+
+const secciones = [
+	{ id: 'paquetes', etiqueta: 'Paquetes', titulo: 'Creación de la web, pago único', planes: paquetes },
+	{ id: 'mensualidad', etiqueta: 'Mensualidad', titulo: 'Mantenimiento mensual', planes: mensualidad },
+	{ id: 'hosting', etiqueta: 'Hosting', titulo: 'Hosting y dominio', planes: hosting },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1 class="text-3xl font-bold text-slate-900">Astro</h1>
-	</body>
-</html>
+<Layout
+	title="Planes y precios"
+	description="Webs para concesionarios de coches y talleres en Madrid. Paquete Básico 549 €, Premium 799 € y mantenimiento mensual de 49 €."
+>
+	<main>
+		<section class="flex min-h-[var(--alto-bloque)] flex-col bg-noche px-6 py-20 sm:px-12 sm:py-28 lg:px-20 lg:py-32">
+			<div class="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-between gap-16">
+				<p class="font-display text-[17px] font-bold text-azul-claro">{AGENCIA}</p>
+
+				<div class="flex flex-col gap-7">
+					<h1 class="font-display text-[clamp(2.5rem,7vw,4.5rem)] font-extrabold leading-[1.05] text-hueso">
+						Planes y precios
+					</h1>
+					<p class="max-w-[38ch] text-[clamp(1.125rem,2.4vw,1.5rem)] leading-[1.4] text-niebla">
+						Webs para concesionarios de coches y talleres en Madrid
+					</p>
+				</div>
+
+				<p class="text-[15px] text-humo">Paquetes · Mensualidad · Hosting</p>
+			</div>
+		</section>
+
+		<section class="flex min-h-[var(--alto-bloque)] flex-col px-6 py-16 sm:px-12 sm:py-24 lg:px-20">
+			<div class="mx-auto w-full max-w-6xl">
+				<div
+					id="pista"
+					role="tablist"
+					aria-label="Tipo de plan"
+					style="--i: 0"
+					class="relative grid w-full max-w-md grid-cols-3 rounded-full bg-pista p-1.5"
+				>
+					<span
+						id="indicador"
+						aria-hidden="true"
+						class="absolute inset-y-1.5 left-1.5 w-[calc((100%-0.75rem)/3)] rounded-full bg-azul"
+					></span>
+					{
+						secciones.map((s, i) => (
+							<button
+								type="button"
+								role="tab"
+								id={`tab-${s.id}`}
+								aria-controls={`panel-${s.id}`}
+								aria-selected={i === 0 ? 'true' : 'false'}
+								tabindex={i === 0 ? 0 : -1}
+								class="relative z-10 cursor-pointer rounded-full px-4 py-3 font-display text-[15px] font-semibold text-humo outline-offset-2 focus-visible:outline-2 focus-visible:outline-azul aria-selected:font-bold aria-selected:text-crema sm:text-base"
+							>
+								{s.etiqueta}
+							</button>
+						))
+					}
+				</div>
+
+				<div class="paneles mt-10 overflow-x-clip sm:mt-12">
+					{
+						secciones.map((s, i) => (
+							<div
+								role="tabpanel"
+								id={`panel-${s.id}`}
+								aria-labelledby={`tab-${s.id}`}
+								data-activo={i === 0 ? '' : undefined}
+							>
+								<h2 class="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold leading-[1.1]">
+									{s.titulo}
+								</h2>
+								<div
+									class={
+										s.planes.length === 1
+											? 'mx-auto mt-8 w-full max-w-3xl'
+											: 'mt-8 grid items-start gap-6 md:grid-cols-2'
+									}
+								>
+									{s.planes.map((plan) => (
+										<PlanCard {...plan} />
+									))}
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<script>
+	const pista = document.getElementById('pista');
+	const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+	const paneles = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')!)!);
+	let actual = 0;
+
+	function activar(destino: number) {
+		if (destino === actual || !pista) return;
+
+		// A la derecha entra desde la derecha; a la izquierda, desde la izquierda.
+		const direccion = destino > actual ? 'desde-derecha' : 'desde-izquierda';
+
+		tabs[actual].setAttribute('aria-selected', 'false');
+		tabs[actual].tabIndex = -1;
+		paneles[actual].removeAttribute('data-activo');
+		paneles[actual].classList.remove('desde-derecha', 'desde-izquierda');
+
+		actual = destino;
+		pista.style.setProperty('--i', String(destino));
+		tabs[destino].setAttribute('aria-selected', 'true');
+		tabs[destino].tabIndex = 0;
+		paneles[destino].setAttribute('data-activo', '');
+		paneles[destino].classList.add(direccion);
+	}
+
+	tabs.forEach((tab, i) => {
+		tab.addEventListener('click', () => activar(i));
+		tab.addEventListener('keydown', (e) => {
+			if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+			e.preventDefault();
+			const siguiente = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+			activar(siguiente);
+			tabs[siguiente].focus();
+		});
+	});
+
+	paneles.forEach((panel) =>
+		panel.addEventListener('animationend', () =>
+			panel.classList.remove('desde-derecha', 'desde-izquierda')
+		)
+	);
+</script>
