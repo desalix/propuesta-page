@@ -17,7 +17,7 @@ const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = fals
 {
 	columna ? (
 		<article class={`flex flex-col border-t border-hilo pt-8 ${clase}`}>
-			<h3 class="text-[clamp(1.625rem,2.2vw,2rem)] leading-tight font-medium tracking-[-0.02em]">{nombre}</h3>
+			<h3 class="font-serif text-[clamp(1.875rem,2.6vw,2.375rem)] leading-tight">{nombre}</h3>
 			{subtitulo && <p class="mt-2 text-[1.0625rem] text-grafito">{subtitulo}</p>}
 			<p class="mt-6 text-[clamp(2.75rem,4vw,3.75rem)] leading-none font-light tracking-[-0.04em] whitespace-nowrap text-verde tabular-nums">
 				{precio}
@@ -36,7 +36,7 @@ const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = fals
 		<article class="border-t border-hilo py-14 first:border-t-0 first:pt-0 last:pb-0 sm:py-16">
 			<div class="flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-12">
 				<div>
-					<h3 class="text-[clamp(1.75rem,2.6vw,2.25rem)] leading-tight font-medium tracking-[-0.02em]">
+					<h3 class="font-serif text-[clamp(2rem,3vw,2.625rem)] leading-tight">
 						{nombre}
 					</h3>
 					{subtitulo && <p class="mt-2 text-[1.0625rem] text-grafito">{subtitulo}</p>}
@@ -50,7 +50,7 @@ const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = fals
 			{nota && <p class="mt-10 text-[1.1875rem] font-medium">{nota}</p>}
 
 			<ul
-				class={`lista max-w-[64rem] gap-x-14 text-[1.1875rem] leading-[1.6] sm:columns-2 ${nota ? 'mt-5' : 'mt-10'}`}
+				class={`lista max-w-5xl gap-x-14 text-[1.1875rem] leading-[1.6] sm:columns-2 ${nota ? 'mt-5' : 'mt-10'}`}
 			>
 				{caracteristicas.map((c) => (
 					<li>{c}</li>
