@@ -1,0 +1,17 @@
+---
+// El trazado sale del propio archivo del logo; aquí solo se re-dibuja con
+// pathLength="1" para poder animar el contorno desde CSS.
+import fuente from '../assets/SGblack.svg?raw';
+
+interface Props {
+	class?: string;
+}
+
+const { class: clase } = Astro.props;
+const d = fuente.match(/\sd="([^"]+)"/)?.[1] ?? '';
+const viewBox = fuente.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 1173 1020';
+---
+
+<svg viewBox={viewBox} class={clase} role="img" aria-label="SG Digital">
+	<path d={d} pathLength="1" fill="currentColor"></path>
+</svg>
