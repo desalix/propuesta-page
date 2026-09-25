@@ -11,29 +11,31 @@ import Footer from '../components/Footer.astro';
 	title="Planes y precios | SG Digital"
 	description="Webs para concesionarios de coches y talleres en Madrid. Estándar 549 €, Premium 799 €, mantenimiento desde 29 € al mes."
 >
-	<section class="portada" aria-labelledby="titulo-portada">
-		<div class="lienzo">
-			<Picture
-				src={hero}
-				formats={['avif', 'webp']}
-				widths={[960, 1440, 1920, 2752]}
-				sizes="(min-aspect-ratio: 2752/1536) 100vw, 179vh"
-				alt=""
-				loading="eager"
-				fetchpriority="high"
-				class="absolute inset-0 size-full"
-			/>
-		</div>
-
-		<header class="absolute inset-x-0 top-0 z-10 bg-linear-to-b from-blanco to-transparent pb-18">
-			<div class="mx-auto flex max-w-352 items-center justify-center gap-8 px-6 pt-6 sm:px-10 sm:pt-8 lg:px-16">
-				<Logo class="logo h-11 w-auto text-tinta sm:h-12" />
-				<div class="aparece">
-					<p class="text-[0.9375rem] text-grafito">Tu web a medida.</p>
-				</div>
+	<div id="pista-portada" class="pista-portada">
+		<section class="portada" aria-labelledby="titulo-portada">
+			<div class="lienzo">
+				<Picture
+					src={hero}
+					formats={['avif', 'webp']}
+					widths={[960, 1440, 1920, 2752]}
+					sizes="(min-aspect-ratio: 2752/1536) 100vw, 179vh"
+					alt=""
+					loading="eager"
+					fetchpriority="high"
+					class="absolute inset-0 size-full"
+				/>
 			</div>
-		</header>
-	</section>
+
+			<header class="absolute inset-x-0 top-0 z-10 bg-linear-to-b from-blanco to-transparent pb-18">
+				<div class="mx-auto flex max-w-352 items-center justify-center gap-8 px-6 pt-6 sm:px-10 sm:pt-8 lg:px-16">
+					<Logo class="logo h-11 w-auto text-tinta sm:h-12" />
+					<div class="aparece">
+						<p class="text-[0.9375rem] text-grafito">Tu web a medida.</p>
+					</div>
+				</div>
+			</header>
+		</section>
+	</div>
 
 	<main>
 		<!-- Paquetes -->
@@ -185,3 +187,121 @@ import Footer from '../components/Footer.astro';
 
 	<Footer />
 </Layout>
+
+<script>
+	// Al hacer scroll la cámara entra en la pantalla del portátil. Sobre la
+	// pantalla aparece desde el primer momento una copia de «Nuestros paquetes»;
+	// cuando el zoom termina, la copia está a tamaño real justo donde va la
+	// sección de verdad, se cambia una por otra y el scroll sigue normal.
+	const pista = document.getElementById('pista-portada')!;
+	const portada = pista.querySelector<HTMLElement>('.portada')!;
+	const lienzo = pista.querySelector<HTMLElement>('.lienzo')!;
+	const cabecera = portada.querySelector<HTMLElement>('header')!;
+	const paquetes = document.getElementById('paquetes')!;
+	const reducir = matchMedia('(prefers-reduced-motion: reduce)');
+
+	// Pantalla del portátil dentro de hero.jpeg, en fracciones del lienzo.
+	const PANTALLA = { x: 0.3579, y: 0.388, ancho: 0.2878, alto: 0.334 };
+	const RECORRIDO = 1.2; // alturas de pantalla que dura la escena
+	const APARICION = 0.45; // parte del recorrido en la que la copia aparece dentro de la pantalla
+
+	let copia: HTMLElement | null = null;
+	let recorrido = 0;
+	let escalaFinal = 1;
+	let dx = 0;
+	let dy = 0;
+	let ancho = 0;
+	let alto = 0;
+	let pendiente = false;
+
+	function crearCopia() {
+		const c = paquetes.cloneNode(true) as HTMLElement;
+		c.removeAttribute('id');
+		c.removeAttribute('aria-labelledby');
+		c.removeAttribute('style');
+		c.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+		c.classList.add('copia-paquetes');
+		c.inert = true;
+		// Entre el lienzo y la cabecera: encima de la foto, debajo del logo.
+		lienzo.after(c);
+		return c;
+	}
+
+	function medir() {
+		ancho = portada.clientWidth;
+		alto = portada.offsetHeight;
+		recorrido = alto * RECORRIDO;
+		pista.style.height = `${alto + recorrido}px`;
+		// La sección real sube una pantalla: al soltarse la portada queda justo encima de su último fotograma.
+		paquetes.style.marginTop = `${-alto}px`;
+
+		const W = lienzo.offsetWidth;
+		const H = lienzo.offsetHeight;
+		// Escala a la que la pantalla blanca cubre toda la ventana (con un pequeño margen).
+		escalaFinal = Math.max(ancho / (PANTALLA.ancho * W), alto / (PANTALLA.alto * H)) * 1.06;
+		// Distancia del centro de la pantalla al centro del lienzo, para llevarla al centro de la ventana.
+		dx = (PANTALLA.x + PANTALLA.ancho / 2 - 0.5) * W;
+		dy = (PANTALLA.y + PANTALLA.alto / 2 - 0.5) * H;
+
+		copia!.style.width = `${ancho}px`;
+		copia!.style.height = `${alto}px`;
+	}
+
+	function pintar() {
+		pendiente = false;
+		const avance = Math.min(Math.max((scrollY - pista.offsetTop) / recorrido, 0), 1);
+		const e = avance * avance * (3 - 2 * avance);
+
+		// Escala exponencial: el acercamiento se percibe a velocidad constante.
+		const escala = Math.pow(escalaFinal, e);
+		lienzo.style.transform = `translate(${-dx * e}px, ${-dy * e}px) scale(${escala})`;
+
+		// La copia sigue a la pantalla: mismo centro y la misma escala relativa. Al final
+		// escala / escalaFinal = 1 y el centro coincide con el de la ventana: transform none.
+		// (Se fija un poco antes: con una escala casi-1 el navegador coloca el texto un par de
+		// píxeles distinto que sin transform y se notaría el relevo.)
+		copia!.style.transform =
+			e >= 0.999 ? 'none' : `translate(${dx * (1 - e)}px, ${dy * (1 - e)}px) scale(${escala / escalaFinal})`;
+		cabecera.style.opacity = String(1 - Math.min(avance / 0.15, 1));
+		copia!.style.opacity = String(Math.min(avance / APARICION, 1));
+		// La sección real solo se ve cuando la portada se suelta; hasta entonces la tapa la copia.
+		paquetes.style.visibility = avance >= 1 ? '' : 'hidden';
+	}
+
+	function alDesplazar() {
+		if (!pendiente) {
+			pendiente = true;
+			requestAnimationFrame(pintar);
+		}
+	}
+
+	function alRedimensionar() {
+		medir();
+		pintar();
+	}
+
+	function activar() {
+		copia ??= crearCopia();
+		pista.classList.add('zoom');
+		medir();
+		pintar();
+		addEventListener('scroll', alDesplazar, { passive: true });
+		addEventListener('resize', alRedimensionar);
+	}
+
+	function desactivar() {
+		pista.classList.remove('zoom');
+		removeEventListener('scroll', alDesplazar);
+		removeEventListener('resize', alRedimensionar);
+		copia?.remove();
+		copia = null;
+		pista.style.height = '';
+		lienzo.style.transform = '';
+		cabecera.style.opacity = '';
+		paquetes.style.marginTop = '';
+		paquetes.style.visibility = '';
+	}
+
+	if (!reducir.matches) activar();
+	reducir.addEventListener('change', () => (reducir.matches ? desactivar() : activar()));
+</script>

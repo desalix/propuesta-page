@@ -67,6 +67,43 @@
 	height: 33.4%;
 }
 
+/* ——— Zoom al portátil al hacer scroll ———
+   El script añade .zoom a la pista (salvo con prefers-reduced-motion): la portada
+   se queda fija mientras dura el recorrido y #paquetes se superpone para el fundido. */
+.pista-portada.zoom > .portada {
+	position: sticky;
+	top: 0;
+}
+
+.pista-portada.zoom .lienzo {
+	/* Centro de la pantalla del portátil dentro de la foto. Sin will-change a
+	   propósito: así el navegador re-rasteriza al escalar y la copia de Paquetes
+	   llega nítida al final del zoom. */
+	transform-origin: 50.18% 55.5%;
+}
+
+/* Copia decorativa de #paquetes que sigue a la pantalla del portátil: se maqueta al
+   tamaño de la ventana y el script la encoge y la coloca sobre la pantalla en cada
+   fotograma. Va fuera del lienzo para que, al terminar el zoom, su transform sea
+   exactamente none y se dibuje píxel a píxel igual que la sección real. */
+.copia-paquetes {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: clip;
+	opacity: 0;
+	transform-origin: center;
+}
+
+.copia-paquetes .filete {
+	animation: none;
+}
+
+.pista-portada.zoom + main > #paquetes {
+	position: relative;
+	z-index: 1;
+}
+
 /* ——— Secuencia de carga de la portada ——— */
 
 /* El monograma se traza con un hilo y después se rellena. pathLength="1"
