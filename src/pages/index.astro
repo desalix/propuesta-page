@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import Logo from '../components/Logo.astro';
 import hero from '../assets/hero.jpeg';
 import smithers from '../assets/projects/smithers.png';
@@ -8,6 +8,9 @@ import carmovil from '../assets/projects/carmovil.png';
 import autoclub from '../assets/projects/autoclubtrackdays.png';
 import iphone from '../assets/iphone-diseno.png';
 import Footer from '../components/Footer.astro';
+
+// Foto pequeña para el fondo difuminado de la portada en pantallas verticales.
+const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 ---
 
 <Layout
@@ -16,12 +19,13 @@ import Footer from '../components/Footer.astro';
 >
 	<div id="pista-portada" class="pista-portada">
 		<section class="portada" aria-labelledby="titulo-portada">
+			<div class="portada-fondo" aria-hidden="true" style={`background-image: url(${fondoPortada.src})`}></div>
 			<div class="lienzo">
 				<Picture
 					src={hero}
 					formats={['avif', 'webp']}
 					widths={[960, 1440, 1920, 2752]}
-					sizes="(min-aspect-ratio: 2752/1536) 100vw, 179vh"
+					sizes="(min-aspect-ratio: 2752/1536) 100vw, (max-aspect-ratio: 3/4) 126vh, 179vh"
 					alt=""
 					loading="eager"
 					fetchpriority="high"
@@ -189,7 +193,7 @@ import Footer from '../components/Footer.astro';
 				</h2>
 				<a
 					href="/paquetes"
-					class="font-serif text-[clamp(1.75rem,3vw,3.5rem)] text-verde underline decoration-1 underline-offset-8 hover:text-black transition-colors focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-verde"
+					class="font-serif text-[2.125rem] text-verde sm:text-[clamp(1.75rem,3vw,3.5rem)] underline decoration-1 underline-offset-8 hover:text-black transition-colors focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-verde"
 				>
 					Descúbrenos <span aria-hidden="true">→</span>
 				</a>
@@ -247,7 +251,9 @@ import Footer from '../components/Footer.astro';
 	function medir() {
 		ancho = portada.clientWidth;
 		alto = portada.offsetHeight;
-		recorrido = alto * RECORRIDO;
+		// Entero: con un recorrido fraccionario el contenido real quedaría a una fracción de píxel
+		// de la copia al soltarse, y el texto se dibujaría un poco distinto en el relevo.
+		recorrido = Math.round(alto * RECORRIDO);
 		pista.style.height = `${alto + recorrido}px`;
 		// El contenido real sube una pantalla: al soltarse la portada queda justo encima de su último fotograma.
 		principal.style.marginTop = `${-alto}px`;

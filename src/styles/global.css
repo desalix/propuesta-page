@@ -70,6 +70,30 @@ html::-webkit-scrollbar {
 	container-type: inline-size;
 }
 
+/* En pantallas verticales (móvil) la foto no llena todo el alto: ocupa el 70 % y así se
+   ve el portátil entero con algo de mesa. Arriba y abajo asoma la misma foto muy
+   difuminada, y los bordes de la nítida se funden con ella. El zoom se calcula con el
+   tamaño real del lienzo, así que sigue terminando con la pantalla cubriendo la ventana. */
+.portada-fondo {
+	display: none;
+}
+
+@media (max-aspect-ratio: 3/4) {
+	.lienzo {
+		width: max(100%, 70svh * 2752 / 1536, 22.4rem * 2752 / 1536);
+		mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+	}
+
+	.portada-fondo {
+		display: block;
+		position: absolute;
+		inset: -3rem;
+		background-position: center;
+		background-size: cover;
+		filter: blur(28px);
+	}
+}
+
 .pantalla {
 	position: absolute;
 	left: 35.79%;
