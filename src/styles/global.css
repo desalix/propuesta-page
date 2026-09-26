@@ -16,12 +16,6 @@
 	--font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-	html {
-		scroll-behavior: smooth;
-	}
-}
-
 /* Sin barra de scroll visible (la página sigue desplazándose con rueda, teclado y táctil). */
 html {
 	scrollbar-width: none;
@@ -58,6 +52,14 @@ html::-webkit-scrollbar {
 	height: 100svh;
 	min-height: 32rem;
 	overflow: clip;
+}
+
+/* En móvil (vertical u horizontal) no hay portada: la página empieza directamente en la barra
+   y SG Digital. Mismo corte que el script de index.astro, que ahí no monta la escena. */
+@media (max-width: 48rem), (max-height: 30rem) {
+	.pista-portada {
+		display: none;
+	}
 }
 
 .lienzo {
@@ -103,7 +105,7 @@ html::-webkit-scrollbar {
 }
 
 /* ——— Zoom al portátil al hacer scroll ———
-   El script añade .zoom a la pista (salvo con prefers-reduced-motion): la portada
+   El script añade .zoom a la pista (salvo en móvil o con prefers-reduced-motion): la portada
    se queda fija mientras dura el recorrido y <main> se superpone para el fundido. */
 .pista-portada.zoom > .portada {
 	position: sticky;
@@ -118,9 +120,8 @@ html::-webkit-scrollbar {
 }
 
 /* Copia decorativa del principio de <main> (barra + SG Digital) que sigue a la pantalla
-   del portátil: se maqueta al
-   tamaño de la ventana y el script la encoge y la coloca sobre la pantalla en cada
-   fotograma. Va fuera del lienzo para que, al terminar el zoom, su transform sea
+   del portátil: se maqueta al tamaño de la ventana y el script la encoge y la coloca sobre
+   la pantalla en cada fotograma. Va fuera del lienzo para que, al terminar el zoom, su transform sea
    exactamente none y se dibuje píxel a píxel igual que el contenido real. */
 .copia-principal {
 	position: absolute;
@@ -162,8 +163,16 @@ html::-webkit-scrollbar {
 	}
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.logo-trazo path {
+		animation: none;
+		fill-opacity: 1;
+		stroke-opacity: 0;
+	}
+}
+
 /* ——— iPhone de SG Digital: entra solo, desde fuera de la pantalla por la izquierda ———
-   Solo con la escena activa (.zoom; sin reduced motion): espera fuera de la pantalla y el
+   Solo con la escena activa (.zoom): espera fuera de la pantalla y el
    script le añade .dentro al llegar a la sección. En la copia del portátil también espera
    fuera, para que el relevo sea idéntico. Sin script, se ve quieto en su sitio. */
 .pista-portada.zoom + main .telefono,
@@ -217,14 +226,6 @@ html::-webkit-scrollbar {
 	to {
 		opacity: 1;
 		transform: none;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.logo-trazo path {
-		animation: none;
-		fill-opacity: 1;
-		stroke-opacity: 0;
 	}
 }
 

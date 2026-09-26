@@ -7,10 +7,35 @@ import smithers from '../assets/projects/smithers.png';
 import carmovil from '../assets/projects/carmovil.png';
 import autoclub from '../assets/projects/autoclubtrackdays.png';
 import iphone from '../assets/iphone-diseno.png';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
 // Foto pequeña para el fondo difuminado de la portada en pantallas verticales.
 const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
+
+const proyectos = [
+	{
+		nombre: 'Autoclub Trackdays',
+		sector: 'Compraventa de coches, Madrid',
+		imagen: autoclub,
+		descripcion:
+			'Más de 25 años comprando y vendiendo coches de ocasión. Diseñamos su catálogo, con los coches destacados en portada y contacto directo por WhatsApp, y un panel a medida para que gestionen ellos mismos el inventario.',
+	},
+	{
+		nombre: 'Autotalleres Carmovil',
+		sector: 'Taller mecánico, Tres Cantos',
+		imagen: carmovil,
+		descripcion:
+			'Un taller familiar desde 1991 con una web de hace años que pedía un lavado de cara. Renovamos su imagen y su marca: ahora su web explica cómo trabajan, qué servicios ofrecen y qué dicen sus clientes, y deja pedir cita con un toque.',
+	},
+	{
+		nombre: 'Smithers Restaurant',
+		sector: 'Restaurante, Madrid',
+		imagen: smithers,
+		descripcion:
+			'Desayunos y menú del día en Madrid. Querían una imagen profesional para su nueva apertura: les hicimos una web con carta, menú, galería y eventos, con las reservas de esos eventos gestionadas desde la propia web.',
+	},
+];
 ---
 
 <Layout
@@ -18,14 +43,16 @@ const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 	description="SG Digital diseña webs a medida para todo tipo de empresas y eventos en Madrid."
 >
 	<div id="pista-portada" class="pista-portada">
-		<section class="portada" aria-labelledby="titulo-portada">
+		<section class="portada">
 			<div class="portada-fondo" aria-hidden="true" style={`background-image: url(${fondoPortada.src})`}></div>
 			<div class="lienzo">
+				<!-- En móvil la portada está oculta pero la foto se descargaría igual: con «1px» en sizes
+				     se baja la versión más pequeña en vez de la de 2752 px. -->
 				<Picture
 					src={hero}
 					formats={['avif', 'webp']}
 					widths={[960, 1440, 1920, 2752]}
-					sizes="(min-aspect-ratio: 2752/1536) 100vw, (max-aspect-ratio: 3/4) 126vh, 179vh"
+					sizes="(max-width: 48rem) or (max-height: 30rem) 1px, (min-aspect-ratio: 2752/1536) 100vw, (max-aspect-ratio: 3/4) 126vh, 179vh"
 					alt=""
 					loading="eager"
 					fetchpriority="high"
@@ -39,22 +66,7 @@ const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 	</div>
 
 	<main>
-		<header class="sticky top-0 z-20">
-			<!-- Barra blanca con la línea como borde inferior -->
-			<div class="bg-blanco">
-				<div class="mx-auto max-w-352 px-6 sm:px-10 lg:px-16">
-					<div class="flex items-center justify-between gap-6 border-b border-hilo py-6 sm:py-8">
-						<Logo class="h-11 w-auto text-tinta sm:h-12" />
-						<a
-							href="/paquetes"
-							class="font-serif text-[1.375rem] text-tinta decoration-1 underline-offset-4 focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-tinta sm:text-2xl hover:underline"
-						>
-							Paquetes
-						</a>
-					</div>
-				</div>
-			</div>
-		</header>
+		<Header />
 
 		<!-- SG Digital -->
 		<section class="overflow-x-clip bg-blanco" aria-labelledby="titulo-sg">
@@ -104,77 +116,28 @@ const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 					</p>
 
 					<div class="mt-24 grid gap-x-16 gap-y-24 sm:mt-32 md:grid-cols-[repeat(2,minmax(0,29rem))] md:justify-around lg:gap-y-32">
-						<!-- Autoclub Trackdays -->
-						<article class="proyecto flex flex-col border-t border-hilo pt-10">
-							<Picture
-								src={autoclub}
-								alt="Página de inicio de la web de Autoclub Trackdays"
-								formats={['avif', 'webp']}
-								fallbackFormat="jpg"
-								width={1280}
-								height={800}
-								widths={[640, 960, 1280]}
-								sizes="(min-width: 64rem) 29rem, (min-width: 48rem) 45vw, 100vw"
-								fit="cover"
-								position="top"
-								class="aspect-16/10 w-full bg-salvia object-cover object-top"
-							/>
-							<h3 class="mt-10 font-serif text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.05]">
-								Autoclub Trackdays
-							</h3>
-							<p class="mt-2 text-[1.0625rem] text-grafito">Compraventa de coches, Madrid</p>
-							<p class="mt-6 max-w-[48ch] text-[1.1875rem] leading-[1.6]">
-								Más de 25 años comprando y vendiendo coches de ocasión. Diseñamos su catálogo, con los coches destacados en portada y contacto directo por WhatsApp, y un panel a medida para que gestionen ellos mismos el inventario.
-							</p>
-						</article>
-
-						<!-- Carmovil -->
-						<article class="proyecto flex flex-col border-t border-hilo pt-10">
-							<Picture
-								src={carmovil}
-								alt="Página de inicio de la web de Autotalleres Carmovil"
-								formats={['avif', 'webp']}
-								fallbackFormat="jpg"
-								width={1280}
-								height={800}
-								widths={[640, 960, 1280]}
-								sizes="(min-width: 64rem) 29rem, (min-width: 48rem) 45vw, 100vw"
-								fit="cover"
-								position="top"
-								class="aspect-16/10 w-full bg-salvia object-cover object-top"
-							/>
-							<h3 class="mt-10 font-serif text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.05]">
-								Autotalleres Carmovil
-							</h3>
-							<p class="mt-2 text-[1.0625rem] text-grafito">Taller mecánico, Tres Cantos</p>
-							<p class="mt-6 max-w-[48ch] text-[1.1875rem] leading-[1.6]">
-								Un taller familiar desde 1991 con una web de hace años que pedía un lavado de cara. Renovamos su imagen y su marca: ahora su web explica cómo trabajan, qué servicios ofrecen y qué dicen sus clientes, y deja pedir cita con un toque.
-							</p>
-						</article>
-
-						<!-- Smithers -->
-						<article class="proyecto flex flex-col border-t border-hilo pt-10">
-							<Picture
-								src={smithers}
-								alt="Página de inicio de la web de Smithers Restaurant"
-								formats={['avif', 'webp']}
-								fallbackFormat="jpg"
-								width={1280}
-								height={800}
-								widths={[640, 960, 1280]}
-								sizes="(min-width: 64rem) 29rem, (min-width: 48rem) 45vw, 100vw"
-								fit="cover"
-								position="top"
-								class="aspect-16/10 w-full bg-salvia object-cover object-top"
-							/>
-							<h3 class="mt-10 font-serif text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.05]">
-								Smithers Restaurant
-							</h3>
-							<p class="mt-2 text-[1.0625rem] text-grafito">Restaurante, Madrid</p>
-							<p class="mt-6 max-w-[48ch] text-[1.1875rem] leading-[1.6]">
-								Desayunos y menú del día en Madrid. Querían una imagen profesional para su nueva apertura: les hicimos una web con carta, menú, galería y eventos, con las reservas de esos eventos gestionadas desde la propia web.
-							</p>
-						</article>
+						{
+							proyectos.map((p) => (
+								<article class="proyecto flex flex-col border-t border-hilo pt-10">
+									<Picture
+										src={p.imagen}
+										alt={`Página de inicio de la web de ${p.nombre}`}
+										formats={['avif', 'webp']}
+										fallbackFormat="jpg"
+										width={1280}
+										height={800}
+										widths={[640, 960, 1280]}
+										sizes="(min-width: 64rem) 29rem, (min-width: 48rem) 45vw, 100vw"
+										fit="cover"
+										position="top"
+										class="aspect-16/10 w-full bg-salvia object-cover object-top"
+									/>
+									<h3 class="mt-10 font-serif text-[clamp(2.25rem,3.4vw,3rem)] leading-[1.05]">{p.nombre}</h3>
+									<p class="mt-2 text-[1.0625rem] text-grafito">{p.sector}</p>
+									<p class="mt-6 max-w-[48ch] text-[1.1875rem] leading-[1.6]">{p.descripcion}</p>
+								</article>
+							))
+						}
 					</div>
 				</div>
 			</div>
@@ -217,7 +180,9 @@ const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 	const logoPantalla = lienzo.querySelector<HTMLElement>('.pantalla')!;
 	const principal = pista.nextElementSibling as HTMLElement; // <main>
 	const telefono = principal.querySelector<HTMLElement>('.telefono')!;
-	const reducir = matchMedia('(prefers-reduced-motion: reduce)');
+	// Sin escena con movimiento reducido (portada quieta y scroll normal) ni en móvil, vertical u
+	// horizontal, donde la portada ni se muestra (mismo corte que en global.css).
+	const sinEscena = matchMedia('(prefers-reduced-motion: reduce), (max-width: 48rem), (max-height: 30rem)');
 
 	// Pantalla del portátil dentro de hero.jpeg, en fracciones del lienzo.
 	const PANTALLA = { x: 0.3579, y: 0.388, ancho: 0.2878, alto: 0.334 };
@@ -339,6 +304,6 @@ const fondoPortada = await getImage({ src: hero, width: 480, format: 'webp' });
 		soltada = false;
 	}
 
-	if (!reducir.matches) activar();
-	reducir.addEventListener('change', () => (reducir.matches ? desactivar() : activar()));
+	if (!sinEscena.matches) activar();
+	sinEscena.addEventListener('change', () => (sinEscena.matches ? desactivar() : activar()));
 </script>

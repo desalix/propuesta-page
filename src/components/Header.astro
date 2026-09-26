@@ -1,0 +1,41 @@
+---
+import Logo from './Logo.astro';
+
+interface Props {
+	// En /paquetes el logo lleva al inicio y el enlace a Paquetes queda marcado como página actual.
+	enPaquetes?: boolean;
+}
+
+const { enPaquetes = false } = Astro.props;
+const foco = 'focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-tinta';
+---
+
+<header class="sticky top-0 z-20">
+	<!-- Barra blanca con la línea como borde inferior -->
+	<div class="bg-blanco">
+		<div class="mx-auto max-w-352 px-6 sm:px-10 lg:px-16">
+			<div class="flex items-center justify-between gap-6 border-b border-hilo py-6 sm:py-8">
+				{
+					enPaquetes ? (
+						<a href="/" aria-label="SG Digital, volver al inicio" class={foco}>
+							<Logo class="h-11 w-auto text-tinta sm:h-12" />
+						</a>
+					) : (
+						<Logo class="h-11 w-auto text-tinta sm:h-12" />
+					)
+				}
+				<a
+					href="/paquetes"
+					aria-current={enPaquetes ? 'page' : undefined}
+					class:list={[
+						'font-serif text-[1.375rem] text-tinta decoration-1 underline-offset-4 sm:text-2xl',
+						foco,
+						enPaquetes ? 'underline' : 'hover:underline',
+					]}
+				>
+					Paquetes
+				</a>
+			</div>
+		</div>
+	</div>
+</header>

@@ -5,13 +5,13 @@ interface Props {
 	sufijo?: string;
 	subtitulo?: string;
 	nota?: string;
-	caracteristicas: string[];
+	caracteristicas?: string[];
 	// En columna: nombre, precio y lista apilados, para ponerlos uno al lado del otro.
 	columna?: boolean;
 	class?: string;
 }
 
-const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = false, class: clase = '' } = Astro.props;
+const { nombre, precio, sufijo, subtitulo, nota, caracteristicas = [], columna = false, class: clase = '' } = Astro.props;
 ---
 
 {
@@ -26,11 +26,13 @@ const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = fals
 
 			{nota && <p class="mt-10 text-[1.1875rem] font-medium">{nota}</p>}
 
-			<ul class={`lista text-[1.1875rem] leading-[1.6] ${nota ? 'mt-5' : 'mt-10'}`}>
-				{caracteristicas.map((c) => (
-					<li>{c}</li>
-				))}
-			</ul>
+			{caracteristicas.length > 0 && (
+				<ul class={`lista text-[1.1875rem] leading-[1.6] ${nota ? 'mt-5' : 'mt-10'}`}>
+					{caracteristicas.map((c) => (
+						<li>{c}</li>
+					))}
+				</ul>
+			)}
 		</article>
 	) : (
 		<article class="border-t border-hilo py-14 first:border-t-0 first:pt-0 last:pb-0 sm:py-16">
