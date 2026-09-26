@@ -1,0 +1,61 @@
+---
+interface Props {
+	nombre: string;
+	precio: string;
+	sufijo?: string;
+	subtitulo?: string;
+	nota?: string;
+	caracteristicas: string[];
+	// En columna: nombre, precio y lista apilados, para ponerlos uno al lado del otro.
+	columna?: boolean;
+	class?: string;
+}
+
+const { nombre, precio, sufijo, subtitulo, nota, caracteristicas, columna = false, class: clase = '' } = Astro.props;
+---
+
+{
+	columna ? (
+		<article class={`flex flex-col border-t border-hilo pt-8 ${clase}`}>
+			<h3 class="font-serif text-[clamp(1.875rem,2.6vw,2.375rem)] leading-tight">{nombre}</h3>
+			{subtitulo && <p class="mt-2 text-[1.0625rem] text-grafito">{subtitulo}</p>}
+			<p class="mt-6 text-[clamp(2.75rem,4vw,3.75rem)] leading-none font-light tracking-[-0.04em] whitespace-nowrap text-verde tabular-nums">
+				{precio}
+				{sufijo && <span class="ml-2 text-xl tracking-normal text-grafito">{sufijo}</span>}
+			</p>
+
+			{nota && <p class="mt-10 text-[1.1875rem] font-medium">{nota}</p>}
+
+			<ul class={`lista text-[1.1875rem] leading-[1.6] ${nota ? 'mt-5' : 'mt-10'}`}>
+				{caracteristicas.map((c) => (
+					<li>{c}</li>
+				))}
+			</ul>
+		</article>
+	) : (
+		<article class="border-t border-hilo py-14 first:border-t-0 first:pt-0 last:pb-0 sm:py-16">
+			<div class="flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-12">
+				<div>
+					<h3 class="font-serif text-[clamp(2rem,3vw,2.625rem)] leading-tight">
+						{nombre}
+					</h3>
+					{subtitulo && <p class="mt-2 text-[1.0625rem] text-grafito">{subtitulo}</p>}
+				</div>
+				<p class="text-[clamp(3rem,6.5vw,5rem)] leading-none font-light tracking-[-0.04em] whitespace-nowrap text-verde tabular-nums">
+					{precio}
+					{sufijo && <span class="ml-2 text-xl tracking-normal text-grafito">{sufijo}</span>}
+				</p>
+			</div>
+
+			{nota && <p class="mt-10 text-[1.1875rem] font-medium">{nota}</p>}
+
+			<ul
+				class={`lista max-w-5xl gap-x-14 text-[1.1875rem] leading-[1.6] sm:columns-2 ${nota ? 'mt-5' : 'mt-10'}`}
+			>
+				{caracteristicas.map((c) => (
+					<li>{c}</li>
+				))}
+			</ul>
+		</article>
+	)
+}

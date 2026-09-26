@@ -1,87 +1,235 @@
 @import "tailwindcss";
 
-/* Paleta tomada de PlanesPrecios.html */
+/* Tinta del monograma SG, blanco roto verdoso y un verde de acento. */
 @theme {
-	--color-noche: #14161b;
-	--color-crema: #faf9f6;
-	--color-hueso: #f5f4f0;
-	--color-tinta: #16181d;
-	--color-azul: #2451c4;
-	--color-azul-claro: #7da2f0;
-	--color-pista: #eef1f8;
-	--color-linea: #e4e2dc;
-	--color-humo: #6b7280;
-	--color-niebla: #b7bac2;
+	--color-papel: #f4f5f1;
+	--color-blanco: #ffffff;
+	--color-salvia: #e6ece4;
+	--color-tinta: #1a1815;
+	--color-grafito: #55524c;
+	--color-hilo: rgb(26 24 21 / 0.12);
+	--color-verde: #1e6b4e;
+	--color-bosque: #1b4536;
 
-	--font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-	--font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+	--font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+	/* Instrument Serif: la tipografía de la que sale el monograma SG. */
+	--font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 }
 
-/* Altura mínima compartida por el bloque de portada y la zona de pestañas,
-   para que el alto de la página no baile al cambiar de panel. */
-:root {
-	--alto-bloque: calc(60vh + 12rem);
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
 }
 
-/* Los tres paneles ocupan la misma celda de grid, así que la zona siempre mide
-   lo que el panel más alto y no encoge al cambiar de pestaña. */
-.paneles {
-	display: grid;
+/* Sin barra de scroll visible (la página sigue desplazándose con rueda, teclado y táctil). */
+html {
+	scrollbar-width: none;
 }
 
-.paneles > [role="tabpanel"] {
-	grid-area: 1 / 1;
-	visibility: hidden;
+html::-webkit-scrollbar {
+	display: none;
 }
 
-.paneles > [role="tabpanel"][data-activo] {
-	visibility: visible;
+/* Viñeta propia: un guion fino en vez del punto por defecto. */
+.lista > li {
+	position: relative;
+	padding-left: 1.6em;
+	margin-bottom: 0.7em;
+	break-inside: avoid;
 }
 
-/* Indicador del toggle: las tres columnas miden lo mismo, así que basta
-   con desplazarlo el 100% de su ancho por cada posición. */
-#indicador {
-	transform: translateX(calc(var(--i, 0) * 100%));
-	transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+.lista > li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0.8em;
+	width: 0.75em;
+	height: 2px;
+	background: var(--color-verde);
 }
 
-@keyframes entra-derecha {
+/* ——— Portada a pantalla completa ———
+   .lienzo tiene la proporción exacta de hero.jpeg (2752×1536) y siempre cubre la
+   ventana, igual que object-fit: cover. Así .pantalla puede anclarse en % a la
+   pantalla blanca del portátil, y el texto escala con ella en cqw. */
+.portada {
+	position: relative;
+	height: 100svh;
+	min-height: 32rem;
+	overflow: clip;
+}
+
+.lienzo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: max(100%, 100svh * 2752 / 1536, 32rem * 2752 / 1536);
+	aspect-ratio: 2752 / 1536;
+	translate: -50% -50%;
+	container-type: inline-size;
+}
+
+.pantalla {
+	position: absolute;
+	left: 35.79%;
+	top: 38.8%;
+	width: 28.78%;
+	height: 33.4%;
+}
+
+/* ——— Zoom al portátil al hacer scroll ———
+   El script añade .zoom a la pista (salvo con prefers-reduced-motion): la portada
+   se queda fija mientras dura el recorrido y <main> se superpone para el fundido. */
+.pista-portada.zoom > .portada {
+	position: sticky;
+	top: 0;
+}
+
+.pista-portada.zoom .lienzo {
+	/* Centro de la pantalla del portátil dentro de la foto. Sin will-change a
+	   propósito: así el navegador re-rasteriza al escalar y la copia del contenido
+	   llega nítida al final del zoom. */
+	transform-origin: 50.18% 55.5%;
+}
+
+/* Copia decorativa del principio de <main> (barra + SG Digital) que sigue a la pantalla
+   del portátil: se maqueta al
+   tamaño de la ventana y el script la encoge y la coloca sobre la pantalla en cada
+   fotograma. Va fuera del lienzo para que, al terminar el zoom, su transform sea
+   exactamente none y se dibuje píxel a píxel igual que el contenido real. */
+.copia-principal {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: clip;
+	opacity: 0;
+	transform-origin: center;
+}
+
+.pista-portada.zoom + main {
+	position: relative;
+	z-index: 1;
+}
+
+/* ——— Logo en la pantalla del portátil: se traza con un hilo verde y se rellena ———
+   pathLength="1" en el <path> (Logo.astro) hace que el guion mida el contorno completo. */
+.logo-trazo path {
+	stroke: var(--color-verde);
+	stroke-width: 22;
+	stroke-dasharray: 1;
+	stroke-dashoffset: 1;
+	fill-opacity: 0;
+	animation:
+		trazo 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards,
+		relleno 0.7s ease-out 1.35s forwards;
+}
+
+@keyframes trazo {
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes relleno {
+	to {
+		fill-opacity: 1;
+		stroke-opacity: 0;
+	}
+}
+
+/* ——— iPhone de SG Digital: entra solo, desde fuera de la pantalla por la izquierda ———
+   Solo con la escena activa (.zoom; sin reduced motion): espera fuera de la pantalla y el
+   script le añade .dentro al llegar a la sección. En la copia del portátil también espera
+   fuera, para que el relevo sea idéntico. Sin script, se ve quieto en su sitio. */
+.pista-portada.zoom + main .telefono,
+.copia-principal .telefono {
+	transform: translateX(-100vw);
+}
+
+.pista-portada.zoom + main .telefono.dentro {
+	transform: none;
+	transition: transform 1.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ——— Tarjetas de Proyectos: entran siguiendo el scroll desde el borde más cercano ———
+   Arrancan fuera de la pantalla y transparentes; avanzan con el scroll y quedan fijas en su
+   sitio cuando la tarjeta llega a la zona media de la ventana. En escritorio la columna
+   izquierda entra por la izquierda y la derecha por la derecha; en móvil (una columna)
+   se alternan. Propiedades sueltas (no el shorthand «animation») para que el
+   minificador no rompa la regla. */
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		.proyecto {
+			animation-name: entra-por-la-izquierda;
+			animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+			animation-fill-mode: both;
+			animation-timeline: view();
+			animation-range: entry 0% cover 40%;
+		}
+
+		.proyecto:nth-child(even) {
+			animation-name: entra-por-la-derecha;
+		}
+	}
+}
+
+@keyframes entra-por-la-izquierda {
 	from {
 		opacity: 0;
-		transform: translateX(36px);
+		transform: translateX(-100vw);
 	}
 	to {
 		opacity: 1;
-		transform: translateX(0);
+		transform: none;
 	}
 }
 
-@keyframes entra-izquierda {
+@keyframes entra-por-la-derecha {
 	from {
 		opacity: 0;
-		transform: translateX(-36px);
+		transform: translateX(100vw);
 	}
 	to {
 		opacity: 1;
-		transform: translateX(0);
+		transform: none;
 	}
-}
-
-.desde-derecha {
-	animation: entra-derecha 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.desde-izquierda {
-	animation: entra-izquierda 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	#indicador {
-		transition: none;
-	}
-
-	.desde-derecha,
-	.desde-izquierda {
+	.logo-trazo path {
 		animation: none;
+		fill-opacity: 1;
+		stroke-opacity: 0;
+	}
+}
+
+/* ——— Filete de sección: crece de izquierda a derecha al entrar en pantalla ——— */
+.filete {
+	height: 1px;
+	background: var(--color-hilo);
+	transform-origin: left;
+}
+
+@supports (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		/* Propiedades sueltas a propósito: si se escribe el shorthand «animation», el
+		   minificador mete view() dentro y el navegador descarta la regla entera. */
+		.filete {
+			animation-name: crece;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: view();
+			animation-range: entry 10% cover 35%;
+		}
+	}
+}
+
+@keyframes crece {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
 	}
 }
