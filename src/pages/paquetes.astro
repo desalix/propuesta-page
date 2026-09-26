@@ -49,10 +49,9 @@ import Footer from '../components/Footer.astro';
 								nombre="Esencial"
 								precio="399 €"
 								caracteristicas={[
-									'[Característica 1]',
-									'[Característica 2]',
-									'[Característica 3]',
-									'[Característica 4]',
+									'Landing page',
+									'Diseño responsive con tus colores y tu logo.',
+									'Implementación de SEO básica.',
 								]}
 							/>
 							<Plan
@@ -62,10 +61,8 @@ import Footer from '../components/Footer.astro';
 								precio="699 €"
 								caracteristicas={[
 									'Páginas: inicio, catálogo, ficha de vehículo y quiénes somos.',
-									'Diseño responsive con tus colores y tu logo.',
-									'Listado de catálogo con búsqueda y orden.',
-									'Panel de administrador.',
-									'Mapa y datos del concesionario.',
+									'Implementación de Base de Datos.',
+									'Panel de administrador para modificaciones.',
 									'Páginas legales: aviso legal, política de privacidad y política de cookies.',
 								]}
 							/>
@@ -77,9 +74,9 @@ import Footer from '../components/Footer.astro';
 								nota="Todo lo del paquete Estándar, más:"
 								caracteristicas={[
 									'Funcionalidades especiales a medida: cuéntanos qué quieres y lo estudiamos.',
-									'Te añadimos todos los coches que tengas actualmente disponibles.',
-									'Google Review NFC incluido.',
 									'Servicio de email corporativo.',
+									'Seo profesional.',
+									'Google Review NFC incluido.',
 								]}
 							/>
 						</div>
@@ -93,7 +90,7 @@ import Footer from '../components/Footer.astro';
 			<div class="mx-auto max-w-352 px-6 sm:px-10 lg:px-16">
 				<div class="filete" aria-hidden="true"></div>
 				<div class="grid gap-y-10 py-24 sm:py-32 lg:grid-cols-12 lg:gap-x-10 lg:py-40">
-					<p class="flex items-center gap-3 text-[1.1875rem] font-medium text-verde lg:sticky lg:top-12 lg:col-span-3 lg:self-start">
+					<p class="flex items-center gap-3 text-[1.1875rem] font-medium text-verde lg:sticky lg:top-40 lg:col-span-3 lg:self-start">
 						<span class="size-2 rounded-full bg-verde" aria-hidden="true"></span>
 						Mensualidad
 					</p>
@@ -109,24 +106,24 @@ import Footer from '../components/Footer.astro';
 								nombre="Básico"
 								precio="29 €"
 								sufijo="/ mes"
-								subtitulo="cuota mensual, opcional"
+								subtitulo=""
 								caracteristicas={[
 									'Soporte a través de email.',
 									'Mantenimiento de errores funcionales.',
 									'Actualizaciones de seguridad.',
-									'Hosting de la página.',
 								]}
 							/>
 							<Plan
 								nombre="Plus"
 								precio="49 €"
 								sufijo="/ mes"
-								subtitulo="cuota mensual, opcional"
+								subtitulo=""
 								nota="Todo lo del paquete Básico, más:"
 								caracteristicas={[
 									'Soporte a través de WhatsApp.',
 									'Copias de seguridad mensuales.',
-									'Cambios en el diseño.',
+									'Cambios en el diseño (4 horas).',
+									'Mantenimiento de SEO.',
 								]}
 							/>
 						</div>
@@ -154,10 +151,7 @@ import Footer from '../components/Footer.astro';
 								nombre="Hosting"
 								precio="Incluido"
 								subtitulo="dentro de la cuota de mantenimiento"
-								caracteristicas={[
-									'El hosting de la página va incluido en el mantenimiento.',
-									'Sin coste aparte mientras el mantenimiento esté activo.',
-								]}
+								caracteristicas={[]}
 							/>
 							<Plan
 								columna
@@ -165,10 +159,7 @@ import Footer from '../components/Footer.astro';
 								nombre="Dominio"
 								precio="Aparte"
 								subtitulo="a cargo del cliente"
-								caracteristicas={[
-									'El gasto de titularidad del dominio corre a cargo del cliente.',
-									'El dominio queda a nombre del concesionario.',
-								]}
+								caracteristicas={[]}
 							/>
 						</div>
 					</div>
